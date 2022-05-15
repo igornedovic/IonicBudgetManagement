@@ -1,7 +1,89 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Login!</ion-title>
+    <ion-title>Login</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content> </ion-content>
+<ion-content>
+  <form #loginForm="ngForm" (ngSubmit)="onLogin(loginForm)">
+    <ion-grid>
+      <ion-row>
+        <ion-col sizeSm="6" offsetSm="3">
+          <ion-item lines="none">
+            <img src="../../../assets/img/logo.png" alt="logo" width="200" style="margin: 0 auto;"/>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col sizeSm="6" offsetSm="3">
+          <ion-item lines="none">
+            <ion-label
+              style="
+                font-size: 30px;
+                font-family: Papyrus;
+                border: grey;
+                text-align: center;
+              "
+              >Budget Management</ion-label
+            >
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col sizeSm="6" offsetSm="3">
+          <ion-item>
+            <ion-label position="floating">Email</ion-label>
+            <ion-input
+              type="email"
+              ngModel
+              name="email"
+              email
+              required
+              #email="ngModel"
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col sizeSm="6" offsetSm="3">
+          <ion-item lines="none" *ngIf="email.invalid && email.touched">
+            <ion-label>Email address is not in valid format.</ion-label>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col sizeSm="6" offsetSm="3">
+          <ion-item>
+            <ion-label position="floating">Password</ion-label>
+            <ion-input
+              type="password"
+              ngModel
+              name="password"
+              required
+              #password="ngModel"
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col sizeSm="6" offsetSm="3">
+          <ion-button
+            type="submit"
+            expand="block"
+            shape="round"
+            [disabled]="loginForm.invalid"
+            >Login</ion-button
+          >
+          <ion-button fill="clear" expand="block" routerLink="/register"
+            >Register</ion-button
+          >
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+</ion-content>
