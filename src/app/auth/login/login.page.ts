@@ -47,10 +47,10 @@ export class LoginPage implements OnInit {
             .then((alert) => {
               alert.present();
             });
-
-          loginForm.reset();
         }
       );
+
+      loginForm.reset();
     }
   }
 }

@@ -65,13 +65,28 @@ export class AuthService {
   }
 
   login(user: UserData) {
-    return this.http.post<AuthResponseData>(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`, {email: user.email, password: user.password, returnSecureToken: true})
+    return this.http
+      .post<AuthResponseData>(
+        `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
+        { email: user.email, password: user.password, returnSecureToken: true }
+      )
       .pipe(
         tap((userData) => {
-          const expirationTime = new Date(new Date().getTime() + +userData.expiresIn * 1000);
-          const user = new User(userData.localId, userData.email, userData.idToken, expirationTime);
+          const expirationTime = new Date(
+            new Date().getTime() + +userData.expiresIn * 1000
+          );
+          const user = new User(
+            userData.localId,
+            userData.email,
+            userData.idToken,
+            expirationTime
+          );
           this._user.next(user);
         })
-      )
+      );
+  }
+
+  logout() {
+    this._user.next(null);
   }
 }
