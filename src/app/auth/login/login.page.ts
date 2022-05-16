@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
+
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-login',
@@ -7,11 +11,46 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
-  constructor() {}
+  isLoading = false;
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private alertCtrl: AlertController
+  ) {}
 
   ngOnInit() {}
 
   onLogin(loginForm: NgForm) {
-    console.log(loginForm);
+    this.isLoading = true;
+
+    if (loginForm.valid) {
+      this.authService.login(loginForm.value).subscribe(
+        (response) => {
+          console.log(response);
+
+          this.isLoading = false;
+          this.router.navigateByUrl('/home');
+        },
+        (error) => {
+          console.log(error);
+
+          this.isLoading = false;
+          let message = 'Incorrect email or password!';
+
+          this.alertCtrl
+            .create({
+              header: 'Authentification failed',
+              message,
+              buttons: ['Okay'],
+            })
+            .then((alert) => {
+              alert.present();
+            });
+
+          loginForm.reset();
+        }
+      );
+    }
   }
 }

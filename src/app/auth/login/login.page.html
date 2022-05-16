@@ -72,11 +72,16 @@
 
       <ion-row>
         <ion-col sizeSm="6" offsetSm="3">
+          <div class="ion-text-center">
+            <ion-spinner color="success" *ngIf="isLoading"></ion-spinner>
+          </div>
+
           <ion-button
             type="submit"
             expand="block"
             shape="round"
             [disabled]="loginForm.invalid"
+            *ngIf="!isLoading"
             >Login</ion-button
           >
           <ion-button fill="clear" expand="block" routerLink="/register"
