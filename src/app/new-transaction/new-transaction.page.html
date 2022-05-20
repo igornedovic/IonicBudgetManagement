@@ -1,0 +1,80 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>New transaction</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form
+    #transactionForm="ngForm"
+    (ngSubmit)="onAddTransaction(transactionForm)"
+  >
+    <ion-grid>
+      <ion-row>
+        <ion-col sizeSm="6" offsetSm="3">
+          <ion-item>
+            <ion-label position="floating">Type:</ion-label>
+            <ion-select ngModel name="type" required>
+              <ion-select-option value="deposit">Deposit</ion-select-option>
+              <ion-select-option value="withdrawal"
+                >Withdrawal</ion-select-option
+              >
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col sizeSm="6" offsetSm="3">
+          <ion-item>
+            <ion-label position="floating">Purpose:</ion-label>
+            <ion-input type="text" ngModel name="purpose" required></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col sizeSm="6" offsetSm="3">
+          <ion-item>
+            <ion-label position="floating">Amount:</ion-label>
+            <ion-input type="number" ngModel name="amount" required></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col sizeSm="6" offsetSm="3">
+          <ion-item>
+            <ion-label position="fixed">Date:</ion-label>
+            <ion-input type="date" ngModel name="date" required></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col sizeSm="6" offsetSm="3">
+          <ion-item>
+            <ion-label position="floating">Picture URL:</ion-label>
+            <ion-input type="text" ngModel name="pictureUrl" required></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col sizeSm="6" offsetSm="3">
+          <ion-button
+            type="submit"
+            color="primary"
+            expand="block"
+            [disabled]="transactionForm.invalid"
+          >
+            Add
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+</ion-content>
