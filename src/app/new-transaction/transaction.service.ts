@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { switchMap, take, tap } from 'rxjs/operators';
+import { map, switchMap, take, tap } from 'rxjs/operators';
 
 import { AuthService } from '../auth/auth.service';
 import { Transaction } from './transaction.model';
@@ -66,5 +66,28 @@ export class TransactionService {
         this._transactions.next(transations.concat(newTransaction));
       })
     );
+  }
+
+  getTransactions() {
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.get<{[key: string]: TransactionData}>(`https://budget-management-3ca84-default-rtdb.europe-west1.firebasedatabase.app/transactions.json?auth=${token}`);
+      }),
+      map(transactionsResponse => {
+        const transactions: Transaction[] = [];
+
+        for (const key in transactionsResponse) {
+          if (transactionsResponse.hasOwnProperty(key)) {
+            transactions.push(new Transaction(key, transactionsResponse[key].type, transactionsResponse[key].purpose, transactionsResponse[key].amount, transactionsResponse[key].date, transactionsResponse[key].pictureUrl, transactionsResponse[key].userId));
+          }
+        }
+
+        return transactions;
+      }),
+      tap(transactions => {
+        this._transactions.next(transactions);
+      })
+    )
   }
 }

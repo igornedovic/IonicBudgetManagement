@@ -9,5 +9,17 @@
 </ion-header>
 
 <ion-content>
-  <ion-label>Home</ion-label>
+  
+  <ion-card *ngFor="let transaction of transactions">
+    <ion-card-header>
+      <ion-card-subtitle>{{transaction.type}}</ion-card-subtitle>
+      <ion-card-title><img class="img" src="{{transaction.pictureUrl}}" width="250px"> {{transaction.purpose}} </ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content class="content">
+      Amount: {{transaction.amount| number:'1.2-2'}} RSD
+      Date: {{transaction.date}}
+    </ion-card-content>
+  </ion-card>
+
 </ion-content>
