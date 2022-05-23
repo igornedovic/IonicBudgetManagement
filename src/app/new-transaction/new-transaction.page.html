@@ -18,10 +18,7 @@
           <ion-item>
             <ion-label position="floating">Type:</ion-label>
             <ion-select ngModel name="type" required>
-              <ion-select-option value="deposit">Deposit</ion-select-option>
-              <ion-select-option value="withdrawal"
-                >Withdrawal</ion-select-option
-              >
+              <ion-select-option *ngFor="let type of transactionTypes" [value]="type">{{type}}</ion-select-option>
             </ion-select>
           </ion-item>
         </ion-col>

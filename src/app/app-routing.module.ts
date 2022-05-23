@@ -24,13 +24,13 @@ const routes: Routes = [
     path: 'home',
     loadChildren: () =>
       import('./home/home.module').then((m) => m.HomePageModule),
-    // canLoad: [AuthGuard],
+    canLoad: [AuthGuard],
   },
   {
     path: 'profile',
     loadChildren: () =>
       import('./profile/profile.module').then((m) => m.ProfilePageModule),
-    // canLoad: [AuthGuard],
+    canLoad: [AuthGuard],
   },
   {
     path: 'new-transaction',
@@ -38,13 +38,13 @@ const routes: Routes = [
       import('./new-transaction/new-transaction.module').then(
         (m) => m.NewTransactionPageModule
       ),
-    // canLoad: [AuthGuard],
+    canLoad: [AuthGuard],
   },
   {
     path: 'search',
     loadChildren: () =>
       import('./search/search.module').then((m) => m.SearchPageModule),
-    // canLoad: [AuthGuard],
+    canLoad: [AuthGuard],
   },
 ];
 
