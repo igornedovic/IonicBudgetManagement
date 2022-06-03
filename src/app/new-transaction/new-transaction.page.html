@@ -3,21 +3,21 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
-    <ion-title>New transaction</ion-title>
+    <ion-title>{{!title ? 'New transaction' : 'Edit transaction'}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <form
     #transactionForm="ngForm"
-    (ngSubmit)="onAddTransaction(transactionForm)"
+    (ngSubmit)="!title ? onAddTransaction(transactionForm) : onUpdateTransaction(transactionForm)"
   >
     <ion-grid>
       <ion-row>
         <ion-col sizeSm="6" offsetSm="3">
           <ion-item>
             <ion-label position="floating">Type:</ion-label>
-            <ion-select ngModel name="type" required>
+            <ion-select [ngModel]="type" name="type" required>
               <ion-select-option *ngFor="let type of transactionTypes" [value]="type">{{type}}</ion-select-option>
             </ion-select>
           </ion-item>
@@ -28,7 +28,7 @@
         <ion-col sizeSm="6" offsetSm="3">
           <ion-item>
             <ion-label position="floating">Purpose:</ion-label>
-            <ion-input type="text" ngModel name="purpose" required></ion-input>
+            <ion-input type="text" [ngModel]="purpose" name="purpose" required></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -37,7 +37,7 @@
         <ion-col sizeSm="6" offsetSm="3">
           <ion-item>
             <ion-label position="floating">Amount:</ion-label>
-            <ion-input type="number" ngModel name="amount" required></ion-input>
+            <ion-input type="number" [ngModel]="amount" name="amount" required></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -46,7 +46,7 @@
         <ion-col sizeSm="6" offsetSm="3">
           <ion-item>
             <ion-label position="fixed">Date:</ion-label>
-            <ion-input type="date" ngModel name="date" required></ion-input>
+            <ion-input type="date" [ngModel]="date" name="date" required></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -55,7 +55,7 @@
         <ion-col sizeSm="6" offsetSm="3">
           <ion-item>
             <ion-label position="floating">Picture URL:</ion-label>
-            <ion-input type="text" ngModel name="pictureUrl" required></ion-input>
+            <ion-input type="text" [ngModel]="pictureUrl" name="pictureUrl" required></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -66,9 +66,9 @@
             type="submit"
             color="primary"
             expand="block"
-            [disabled]="transactionForm.invalid"
+            [disabled]="transactionForm.invalid || !transactionForm.touched"
           >
-            Add
+          {{!title ? 'Add' : 'Edit'}}
           </ion-button>
         </ion-col>
       </ion-row>
