@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
 
@@ -12,12 +12,14 @@ import { TransactionService } from './transaction.service';
   styleUrls: ['./new-transaction.page.scss'],
 })
 export class NewTransactionPage implements OnInit {
+  transactionForm: FormGroup;
+
   transactionTypes = Object.values(TransactionType);
   title: string;
   transactionId: string;
   type: string;
   purpose: string;
-  amount: string;
+  amount: number;
   date: string;
   pictureUrl: string;
 
@@ -26,14 +28,21 @@ export class NewTransactionPage implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private loadingCtrl: LoadingController
-  ) {
-    if (this.router.getCurrentNavigation().extras.state) {
-      const state = this.router.getCurrentNavigation().extras.state;
-      
-    }
-  }
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.transactionForm = new FormGroup({
+      type: new FormControl('', Validators.required),
+      purpose: new FormControl('', Validators.required),
+      amount: new FormControl('', [
+        Validators.required,
+        Validators.min(1),
+        Validators.max(999),
+      ]),
+      date: new FormControl('', Validators.required),
+      pictureUrl: new FormControl('', Validators.required),
+    });
+  }
 
   ionViewWillEnter() {
     if (history.state) {
@@ -47,7 +56,7 @@ export class NewTransactionPage implements OnInit {
     }
   }
 
-  onAddTransaction(transactionForm: NgForm) {
+  onAddTransaction() {
     this.loadingCtrl
       .create({
         message: 'Adding transaction...',
@@ -55,16 +64,16 @@ export class NewTransactionPage implements OnInit {
       .then((loadingEl) => {
         loadingEl.present();
         this.transactionService
-          .addTransaction(transactionForm.value)
+          .addTransaction(this.transactionForm.value)
           .subscribe(() => {
             loadingEl.dismiss();
-            transactionForm.reset();
+            this.transactionForm.reset();
             this.router.navigate(['/home']);
           });
       });
   }
 
-  onUpdateTransaction(transactionForm: NgForm) {
+  onUpdateTransaction() {
     this.loadingCtrl
       .create({
         message: 'Updating transaction...',
@@ -72,10 +81,10 @@ export class NewTransactionPage implements OnInit {
       .then((loadingEl) => {
         loadingEl.present();
         this.transactionService
-          .updateTransaction(this.transactionId, transactionForm.value)
+          .updateTransaction(this.transactionId, this.transactionForm.value)
           .subscribe(() => {
             loadingEl.dismiss();
-            transactionForm.reset();
+            this.transactionForm.reset();
             this.router.navigate(['/home']);
           });
       });
