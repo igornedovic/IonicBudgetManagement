@@ -53,6 +53,12 @@ export class NewTransactionPage implements OnInit {
       this.amount = history.state.amount;
       this.date = history.state.date;
       this.pictureUrl = history.state.pictureUrl;
+
+      this.transactionForm.get('type').setValue(this.type);
+      this.transactionForm.get('purpose').setValue(this.purpose);
+      this.transactionForm.get('amount').setValue(this.amount);
+      this.transactionForm.get('date').setValue(this.date);
+      this.transactionForm.get('pictureUrl').setValue(this.pictureUrl);
     }
   }
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { map, tap } from 'rxjs/operators';
+import { map, switchMap, take, tap } from 'rxjs/operators';
 import { User } from './user.model';
 import { BehaviorSubject } from 'rxjs';
 
@@ -16,10 +16,12 @@ interface AuthResponseData {
 }
 
 interface UserData {
-  firstName?: string;
-  lastName?: string;
   email: string;
   password: string;
+  firstName?: string;
+  lastName?: string;
+  balance?: number;
+  userId?: string;
 }
 
 @Injectable({
@@ -66,45 +68,104 @@ export class AuthService {
     );
   }
 
-  register(user: UserData) {
+  get user() {
+    return this._user.asObservable().pipe(
+      map((user) => {
+        if (user) {
+          return user;
+        } else {
+          return null;
+        }
+      })
+    );
+  }
+
+  register(userForm: UserData) {
+    let user: User;
+
     return this.http
       .post<AuthResponseData>(
         `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseAPIKey}`,
-        { email: user.email, password: user.password, returnSecureToken: true }
+        {
+          email: userForm.email,
+          password: userForm.password,
+          returnSecureToken: true,
+        }
       )
       .pipe(
-        tap((userData) => {
+        take(1),
+        switchMap((userData) => {
           const expirationTime = new Date(
             new Date().getTime() + +userData.expiresIn * 1000
           );
-          const user = new User(
+          user = new User(
             userData.localId,
             userData.email,
             userData.idToken,
-            expirationTime
+            expirationTime,
+            userForm.firstName,
+            userForm.lastName,
+            0
           );
+
+          return this.http.post<{ name: string }>(
+            `https://budget-management-3ca84-default-rtdb.europe-west1.firebasedatabase.app/users.json?auth=${user.token}`,
+            {
+              firstName: user.firstName,
+              lastName: user.lastName,
+              balance: user.balance,
+              userId: user.id,
+            }
+          );
+        }),
+        take(1),
+        tap(() => {
           this._user.next(user);
         })
       );
   }
 
-  login(user: UserData) {
+  login(userForm: UserData) {
+    let user: User;
+
     return this.http
       .post<AuthResponseData>(
         `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
-        { email: user.email, password: user.password, returnSecureToken: true }
+        {
+          email: userForm.email,
+          password: userForm.password,
+          returnSecureToken: true,
+        }
       )
       .pipe(
-        tap((userData) => {
+        take(1),
+        switchMap((userData) => {
           const expirationTime = new Date(
             new Date().getTime() + +userData.expiresIn * 1000
           );
-          const user = new User(
+
+          user = new User(
             userData.localId,
             userData.email,
             userData.idToken,
-            expirationTime
+            expirationTime,
           );
+
+          return this.http.get<UserData>(
+            `https://budget-management-3ca84-default-rtdb.europe-west1.firebasedatabase.app/users.json?orderBy="userId"&equalTo="${user.id}"&auth=${user.token}`
+          );
+          
+        }),
+        map(additionalUserData => {
+
+          for (const key in additionalUserData) {
+            if (additionalUserData.hasOwnProperty(key)) {
+              user.firstN = additionalUserData[key].firstName;
+              user.lastN = additionalUserData[key].lastName;
+              user.bal = additionalUserData[key].balance;
+            }
+          }
+
           this._user.next(user);
         })
       );

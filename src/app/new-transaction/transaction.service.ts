@@ -105,7 +105,6 @@ export class TransactionService {
         return transactions;
       }),
       tap((transactions) => {
-        console.log(transactions);
         this._transactions.next(transactions);
       })
     );
