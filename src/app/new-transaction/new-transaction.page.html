@@ -17,7 +17,7 @@
         <ion-col sizeSm="6" offsetSm="3">
           <ion-item>
             <ion-label position="floating">Type:</ion-label>
-            <ion-select name="type" required formControlName="type">
+            <ion-select name="type" required formControlName="type" (ionChange)="onTypeChange($event)">
               <ion-select-option
                 *ngFor="let type of transactionTypes"
                 [value]="type"
@@ -29,10 +29,10 @@
       </ion-row>
 
       <ion-row
-        *ngIf="transactionForm.get('type').invalid && transactionForm.get('type').touched"
+        *ngIf="(transactionForm.get('type').invalid && !transactionForm.get('type').touched) && transactionForm.get('type').dirty"
       >
         <ion-col size-sm="6" offset-sm="3">
-          <span>Invalid entry.</span>
+          <span>Please choose a transaction type.</span>
         </ion-col>
       </ion-row>
 
@@ -53,7 +53,7 @@
         *ngIf="transactionForm.get('purpose').invalid && transactionForm.get('purpose').touched"
       >
         <ion-col size-sm="6" offset-sm="3">
-          <span>Invalid entry.</span>
+          <span>Purpose must contain at least 1 character.</span>
         </ion-col>
       </ion-row>
 
@@ -74,7 +74,9 @@
         *ngIf="transactionForm.get('amount').invalid && transactionForm.get('amount').touched"
       >
         <ion-col size-sm="6" offset-sm="3">
-          <span>Invalid entry.</span>
+          <span *ngIf="transactionForm.get('amount').hasError('required')">Amount must contain at least 1 digit.</span>
+          <span *ngIf="transactionForm.get('amount').hasError('min')">Amount must be greater than 0.</span>
+          <span *ngIf="transactionForm.get('amount').hasError('max') && transactionForm.get('type').value == transactionTypes[1]">Your current balance is less than withdrawal amount.</span>
         </ion-col>
       </ion-row>
 
@@ -91,7 +93,7 @@
         *ngIf="transactionForm.get('date').invalid && transactionForm.get('date').touched"
       >
         <ion-col size-sm="6" offset-sm="3">
-          <span>Invalid entry.</span>
+          <span>Please enter a valid date.</span>
         </ion-col>
       </ion-row>
 
@@ -112,7 +114,7 @@
         *ngIf="transactionForm.get('pictureUrl').invalid && transactionForm.get('pictureUrl').touched"
       >
         <ion-col size-sm="6" offset-sm="3">
-          <span>Invalid entry.</span>
+          <span>Please enter a valid picture url.</span>
         </ion-col>
       </ion-row>
 

@@ -37,7 +37,6 @@ export class NewTransactionPage implements OnInit {
       amount: new FormControl('', [
         Validators.required,
         Validators.min(1),
-        Validators.max(999),
       ]),
       date: new FormControl('', Validators.required),
       pictureUrl: new FormControl('', Validators.required),
@@ -60,6 +59,16 @@ export class NewTransactionPage implements OnInit {
       this.transactionForm.get('date').setValue(this.date);
       this.transactionForm.get('pictureUrl').setValue(this.pictureUrl);
     }
+  }
+
+  onTypeChange(event) {
+    // const type = event.detail.value;
+
+    // if (this.transactionForm.get('type').value == this.transactionTypes[1]) {
+    //   this.transactionForm.get('amount').addValidators(Validators.max(5000));
+    // } else if (this.transactionForm.get('amount').hasValidator(Validators.max(5000))) {
+    //   this.transactionForm.get('amount').clearValidators();
+    // }
   }
 
   onAddTransaction() {
