@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
+import { FormControl, FormGroup, NgForm, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
 
@@ -23,6 +23,8 @@ export class NewTransactionPage implements OnInit {
   date: string;
   pictureUrl: string;
 
+  maxValidator: ValidatorFn = Validators.max(5000); // stored on class level because of reference comparison
+
   constructor(
     private transactionService: TransactionService,
     private router: Router,
@@ -34,10 +36,7 @@ export class NewTransactionPage implements OnInit {
     this.transactionForm = new FormGroup({
       type: new FormControl('', Validators.required),
       purpose: new FormControl('', Validators.required),
-      amount: new FormControl('', [
-        Validators.required,
-        Validators.min(1),
-      ]),
+      amount: new FormControl('', [Validators.required, Validators.min(1)]),
       date: new FormControl('', Validators.required),
       pictureUrl: new FormControl('', Validators.required),
     });
@@ -62,13 +61,17 @@ export class NewTransactionPage implements OnInit {
   }
 
   onTypeChange(event) {
-    // const type = event.detail.value;
+    const type = event.detail.value;
 
-    // if (this.transactionForm.get('type').value == this.transactionTypes[1]) {
-    //   this.transactionForm.get('amount').addValidators(Validators.max(5000));
-    // } else if (this.transactionForm.get('amount').hasValidator(Validators.max(5000))) {
-    //   this.transactionForm.get('amount').clearValidators();
-    // }
+    if (this.transactionForm.get('type').value == this.transactionTypes[1]) {
+      this.transactionForm.get('amount').addValidators(this.maxValidator);
+    } else if (
+      this.transactionForm.get('type').value == this.transactionTypes[0] && this.transactionForm.get('amount').hasValidator(this.maxValidator)
+    ) {
+      this.transactionForm.get('amount').removeValidators(this.maxValidator);
+    }
+
+    this.transactionForm.get('amount').updateValueAndValidity();
   }
 
   onAddTransaction() {
