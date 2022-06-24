@@ -4,9 +4,15 @@
       <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
     <ion-title>Search</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-fab-button size="small" (click)="openModal()">
+        <ion-icon name="search"></ion-icon>
+      </ion-fab-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content> 
-  
+    <ion-label>Nothing to show</ion-label>
 </ion-content>

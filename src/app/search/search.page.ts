@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
+
+import { SearchModalComponent } from './search-modal/search-modal.component';
 
 @Component({
   selector: 'app-search',
@@ -6,10 +9,24 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./search.page.scss'],
 })
 export class SearchPage implements OnInit {
+  constructor(private modalCtrl: ModalController) {}
 
-  constructor() { }
+  ngOnInit() {}
 
-  ngOnInit() {
+  openModal() {
+    this.modalCtrl
+      .create({
+        component: SearchModalComponent,
+        componentProps: { title: 'Add filters' },
+      })
+      .then((modal) => {
+        modal.present();
+        return modal.onDidDismiss();
+      })
+      .then((modalData) => {
+        if (modalData.role === 'confirm') {
+          console.log(modalData);
+        }
+      });
   }
-
 }
