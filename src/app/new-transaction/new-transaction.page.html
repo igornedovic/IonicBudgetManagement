@@ -76,7 +76,7 @@
         <ion-col size-sm="6" offset-sm="3">
           <span *ngIf="transactionForm.get('amount').hasError('required')">Amount must contain at least 1 digit.</span>
           <span *ngIf="transactionForm.get('amount').hasError('min')">Amount must be greater than 0.</span>
-          <span *ngIf="transactionForm.get('amount').hasError('max') && transactionForm.get('type').value == transactionTypes[1]">Your current balance is less than withdrawal amount.</span>
+          <span *ngIf="transactionForm.get('amount').hasError('max') && transactionForm.get('type').value == transactionTypes[1]">Your current balance ({{balance}} RSD) is less than withdrawal amount.</span>
         </ion-col>
       </ion-row>
 

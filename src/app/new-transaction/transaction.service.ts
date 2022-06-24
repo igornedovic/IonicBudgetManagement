@@ -21,11 +21,16 @@ interface TransactionData {
 })
 export class TransactionService {
   private _transactions = new BehaviorSubject<Transaction[]>([]);
+  private _balance = new BehaviorSubject<number>(0);
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
   get transactions() {
     return this._transactions.asObservable();
+  }
+
+  get balance() {
+    return this._balance.asObservable();
   }
 
   addTransaction(transactionData: TransactionData) {
@@ -63,7 +68,9 @@ export class TransactionService {
       take(1),
       tap((transations) => {
         newTransaction.id = generatedId;
-        this._transactions.next(transations.concat(newTransaction));
+        const newTransactions = transations.concat(newTransaction)
+        this._transactions.next(newTransactions);
+        this.changeBalance(newTransactions);
       })
     );
   }
@@ -106,6 +113,7 @@ export class TransactionService {
       }),
       tap((transactions) => {
         this._transactions.next(transactions);
+        this.changeBalance(transactions);
       })
     );
   }
@@ -149,6 +157,7 @@ export class TransactionService {
       }),
       tap(() => {
         this._transactions.next(updatedTransactions);
+        this.changeBalance(updatedTransactions);
       })
     );
   }
@@ -166,10 +175,25 @@ export class TransactionService {
       }),
       take(1),
       tap((transactions) => {
-        this._transactions.next(
-          transactions.filter((t) => t.id !== transactionId)
+        const newTransactions = transactions.filter(
+          (t) => t.id !== transactionId
         );
+        this._transactions.next(newTransactions);
       })
     );
+  }
+
+  changeBalance(transactions: Transaction[]) {
+    let newBalance = 0;
+
+    transactions.forEach((t) => {
+      if (t.type === TransactionType.Deposit) {
+        newBalance += t.amount;
+      } else {
+        newBalance -= t.amount;
+      }
+    });
+    
+    this._balance.next(newBalance);
   }
 }

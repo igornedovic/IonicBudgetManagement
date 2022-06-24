@@ -1,7 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, NgForm, ValidatorFn, Validators } from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  NgForm,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 
 import { TransactionType } from './transaction.model';
 import { TransactionService } from './transaction.service';
@@ -11,8 +18,11 @@ import { TransactionService } from './transaction.service';
   templateUrl: './new-transaction.page.html',
   styleUrls: ['./new-transaction.page.scss'],
 })
-export class NewTransactionPage implements OnInit {
+export class NewTransactionPage implements OnInit, OnDestroy {
   transactionForm: FormGroup;
+  balance: number;
+
+  private transactionSub: Subscription;
 
   transactionTypes = Object.values(TransactionType);
   title: string;
@@ -23,7 +33,7 @@ export class NewTransactionPage implements OnInit {
   date: string;
   pictureUrl: string;
 
-  maxValidator: ValidatorFn = Validators.max(5000); // stored on class level because of reference comparison
+  maxValidator: ValidatorFn; // stored on class level because of reference comparison
 
   constructor(
     private transactionService: TransactionService,
@@ -40,6 +50,13 @@ export class NewTransactionPage implements OnInit {
       date: new FormControl('', Validators.required),
       pictureUrl: new FormControl('', Validators.required),
     });
+
+    this.transactionSub = this.transactionService.balance.subscribe(
+      (balance) => {
+        this.balance = balance;
+        this.maxValidator = Validators.max(this.balance);
+      }
+    );
   }
 
   ionViewWillEnter() {
@@ -66,7 +83,8 @@ export class NewTransactionPage implements OnInit {
     if (this.transactionForm.get('type').value == this.transactionTypes[1]) {
       this.transactionForm.get('amount').addValidators(this.maxValidator);
     } else if (
-      this.transactionForm.get('type').value == this.transactionTypes[0] && this.transactionForm.get('amount').hasValidator(this.maxValidator)
+      this.transactionForm.get('type').value == this.transactionTypes[0] &&
+      this.transactionForm.get('amount').hasValidator(this.maxValidator)
     ) {
       this.transactionForm.get('amount').removeValidators(this.maxValidator);
     }
@@ -106,5 +124,11 @@ export class NewTransactionPage implements OnInit {
             this.router.navigate(['/home']);
           });
       });
+  }
+
+  ngOnDestroy() {
+    if (this.transactionSub) {
+      this.transactionSub.unsubscribe();
+    }
   }
 }

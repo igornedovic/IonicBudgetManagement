@@ -113,7 +113,6 @@ export class AuthService {
             {
               firstName: user.firstName,
               lastName: user.lastName,
-              balance: user.balance,
               userId: user.id,
             }
           );
