@@ -1,10 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 
-import { Transaction } from '../new-transaction/transaction.model';
+import { Transaction, TransactionType } from '../new-transaction/transaction.model';
 import { TransactionService } from '../new-transaction/transaction.service';
 import { SearchModalComponent } from './search-modal/search-modal.component';
+import { StatsComponent } from './stats/stats.component';
 
 @Component({
   selector: 'app-search',
@@ -14,9 +15,14 @@ import { SearchModalComponent } from './search-modal/search-modal.component';
 export class SearchPage implements OnInit, OnDestroy {
   transactions: Transaction[];
   searchedTransactions: Transaction[];
+  depositNumber: number;
+  withdrawalNumber: number;
+  private transactionSub: Subscription;
+
+  @ViewChild(StatsComponent) statsComponent;
+
   isLoading = false;
   notFound = false;
-  private transactionSub: Subscription;
 
   constructor(
     private modalCtrl: ModalController,
@@ -54,6 +60,17 @@ export class SearchPage implements OnInit, OnDestroy {
 
           if (this.searchedTransactions.length === 0) {
             this.notFound = true;
+          } else {
+            this.depositNumber = this.searchedTransactions.filter(t => t.type === TransactionType.Deposit).length;
+            this.withdrawalNumber = this.searchedTransactions.filter(t => t.type === TransactionType.Withdrawal).length;
+
+            if (this.statsComponent) {
+              this.statsComponent.donutChart.data.datasets[0].data[0] = this.depositNumber;
+              this.statsComponent.donutChart.data.datasets[0].data[1] = this.withdrawalNumber;
+
+              this.statsComponent.donutChart.update();
+            }
+            
           }
         }
       });

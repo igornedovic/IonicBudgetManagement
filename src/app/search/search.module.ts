@@ -8,6 +8,7 @@ import { SearchPageRoutingModule } from './search-routing.module';
 
 import { SearchPage } from './search.page';
 import { SearchModalComponent } from './search-modal/search-modal.component';
+import { StatsComponent } from './stats/stats.component';
 
 @NgModule({
   imports: [
@@ -16,6 +17,6 @@ import { SearchModalComponent } from './search-modal/search-modal.component';
     IonicModule,
     SearchPageRoutingModule,
   ],
-  declarations: [SearchPage, SearchModalComponent],
+  declarations: [SearchPage, SearchModalComponent, StatsComponent],
 })
 export class SearchPageModule {}

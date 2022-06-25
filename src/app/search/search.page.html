@@ -52,5 +52,14 @@
         </ion-list>
       </ion-col>
     </ion-row>
+    <ion-row>
+      <ion-col
+        size-md="6"
+        offset-md="3"
+        *ngIf="!isLoading && searchedTransactions && searchedTransactions.length > 0"
+      >
+        <app-stats [depositNumber]="depositNumber" [withdrawalNumber]="withdrawalNumber"></app-stats>
+      </ion-col>
+    </ion-row>
   </ion-grid>
 </ion-content>
