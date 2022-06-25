@@ -13,6 +13,44 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content> 
-    <ion-label>Nothing to show</ion-label>
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col
+        sizeMd="6"
+        offsetMd="3"
+        *ngIf="!isLoading && !notFound && (!searchedTransactions || searchedTransactions.length <= 0)"
+        class="ion-text-center"
+      >
+        <p>Please choose search criteria!</p>
+      </ion-col>
+      <ion-col
+        sizeMd="6"
+        offsetMd="3"
+        *ngIf="notFound && (!searchedTransactions || searchedTransactions.length <= 0)"
+        class="ion-text-center"
+      >
+        <p>Could not find transactions based on a given criteria. Try again!</p>
+      </ion-col>
+      <ion-col
+        size-md="6"
+        offset-md="3"
+        *ngIf="!isLoading && searchedTransactions && searchedTransactions.length > 0"
+      >
+        <ion-list *ngFor="let transaction of searchedTransactions">
+          <ion-item>
+            <ion-avatar slot="start">
+              <ion-img [src]="transaction.pictureUrl"></ion-img>
+            </ion-avatar>
+            <ion-label>
+              <h5>{{ transaction.purpose }}</h5>
+              <p>Type: {{ transaction.type}}</p>
+              <p>Date: {{ transaction.date | date: 'MM/dd/yyyy' }}</p>
+              <p>Amount: {{ transaction.amount | number:'1.2-2' }} RSD</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

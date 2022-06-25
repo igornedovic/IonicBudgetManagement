@@ -101,7 +101,7 @@ export class TransactionService {
                 transactionsResponse[key].type,
                 transactionsResponse[key].purpose,
                 +transactionsResponse[key].amount,
-                transactionsResponse[key].date,
+                new Date(transactionsResponse[key].date),
                 transactionsResponse[key].pictureUrl,
                 transactionsResponse[key].userId
               )

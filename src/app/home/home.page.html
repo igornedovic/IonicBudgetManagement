@@ -76,14 +76,15 @@
           <ion-label>Type: {{transaction.type}}</ion-label>
         </ion-item>
         <ion-item>
-          <ion-label>Date: {{transaction.date}}</ion-label>
+          <ion-label>Date: {{transaction.date | date: 'MM/dd/yyyy'}}</ion-label>
         </ion-item>
         <ion-item>
           <ion-label
             [color]="transaction.type === 'Deposit' ? 'success' : 'danger'"
           >
-            Amount: {{(transaction.type === 'Deposit' ? '+' + transaction.amount
-            : '-' + transaction.amount) | number:'1.2-2'}} RSD
+            Amount: {{(transaction.type === 'Deposit' ?
+            '+'.concat(transaction.amount.toString()) :
+            '-'.concat(transaction.amount.toString())) | number:'1.2-2'}} RSD
           </ion-label>
         </ion-item>
       </ion-list>

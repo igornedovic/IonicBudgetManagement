@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 
 @Component({
@@ -7,6 +8,9 @@ import { ModalController } from '@ionic/angular';
   styleUrls: ['./search-modal.component.scss'],
 })
 export class SearchModalComponent implements OnInit {
+  fromDate: string;
+  toDate: string;
+  range: { lower: number; upper: number };
   @Input() title: string;
 
   constructor(private modalCtrl: ModalController) {}
@@ -17,7 +21,18 @@ export class SearchModalComponent implements OnInit {
     this.modalCtrl.dismiss();
   }
 
-  onFilter() {
-    this.modalCtrl.dismiss({ message: 'FILTER TEST' }, 'confirm');
+  onFilter(modalForm: NgForm) {
+    if (!modalForm.valid) {
+      return;
+    }
+
+    this.modalCtrl.dismiss(
+      {
+        fromDate: new Date(modalForm.value.fromDate),
+        toDate: new Date(modalForm.value.toDate),
+        range: modalForm.value.range,
+      },
+      'confirm'
+    );
   }
 }

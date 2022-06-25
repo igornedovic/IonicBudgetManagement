@@ -1,5 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { LoadingController, NavController, RouterLinkWithHrefDelegate } from '@ionic/angular';
+import {
+  LoadingController,
+  NavController,
+  RouterLinkWithHrefDelegate,
+} from '@ionic/angular';
 import { Subscription } from 'rxjs';
 
 import { Transaction } from '../new-transaction/transaction.model';
@@ -29,9 +33,11 @@ export class HomePage implements OnInit, OnDestroy {
         this.isLoading = false;
       });
 
-    this.transactionSub = this.transactionService.transactions.subscribe(transactions => {
-      this.transactions = transactions;
-    })
+    this.transactionSub = this.transactionService.transactions.subscribe(
+      (transactions) => {
+        this.transactions = transactions;
+      }
+    );
   }
 
   onUpdateTransaction(transaction: Transaction) {
@@ -42,7 +48,7 @@ export class HomePage implements OnInit, OnDestroy {
         type: transaction.type,
         purpose: transaction.purpose,
         amount: transaction.amount,
-        date: transaction.date,
+        date: transaction.date.toISOString().slice(0, 10),
         pictureUrl: transaction.pictureUrl,
       },
     });
@@ -50,17 +56,17 @@ export class HomePage implements OnInit, OnDestroy {
 
   onDeleteTransaction(transactionId: string) {
     this.loadingCtrl
-    .create({
-      message: 'Deleting transaction...',
-    })
-    .then((loadingEl) => {
-      loadingEl.present();
-      this.transactionService
-        .deleteTransaction(transactionId)
-        .subscribe(() => {
-          loadingEl.dismiss();
-        });
-    });
+      .create({
+        message: 'Deleting transaction...',
+      })
+      .then((loadingEl) => {
+        loadingEl.present();
+        this.transactionService
+          .deleteTransaction(transactionId)
+          .subscribe(() => {
+            loadingEl.dismiss();
+          });
+      });
   }
 
   ngOnDestroy() {

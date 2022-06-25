@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 
+import { Transaction } from '../new-transaction/transaction.model';
+import { TransactionService } from '../new-transaction/transaction.service';
 import { SearchModalComponent } from './search-modal/search-modal.component';
 
 @Component({
@@ -8,10 +11,25 @@ import { SearchModalComponent } from './search-modal/search-modal.component';
   templateUrl: './search.page.html',
   styleUrls: ['./search.page.scss'],
 })
-export class SearchPage implements OnInit {
-  constructor(private modalCtrl: ModalController) {}
+export class SearchPage implements OnInit, OnDestroy {
+  transactions: Transaction[];
+  searchedTransactions: Transaction[];
+  isLoading = false;
+  notFound = false;
+  private transactionSub: Subscription;
 
-  ngOnInit() {}
+  constructor(
+    private modalCtrl: ModalController,
+    private transactionService: TransactionService
+  ) {}
+
+  ngOnInit() {
+    this.transactionSub = this.transactionService.transactions.subscribe(
+      (transactions) => {
+        this.transactions = transactions;
+      }
+    );
+  }
 
   openModal() {
     this.modalCtrl
@@ -25,8 +43,25 @@ export class SearchPage implements OnInit {
       })
       .then((modalData) => {
         if (modalData.role === 'confirm') {
-          console.log(modalData);
+          this.searchedTransactions = this.transactions.filter((t) => {
+            return (
+              t.date.getTime() >= modalData.data.fromDate.getTime() &&
+              t.date.getTime() <= modalData.data.toDate.getTime() &&
+              t.amount >= modalData.data.range.lower &&
+              t.amount <= modalData.data.range.upper
+            );
+          });
+
+          if (this.searchedTransactions.length === 0) {
+            this.notFound = true;
+          }
         }
       });
+  }
+
+  ngOnDestroy(): void {
+    if (this.transactionSub) {
+      this.transactionSub.unsubscribe();
+    }
   }
 }
