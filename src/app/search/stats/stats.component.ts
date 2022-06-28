@@ -2,9 +2,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  HostListener,
   Input,
-  OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -16,7 +14,7 @@ import { Chart, registerables } from 'chart.js';
   templateUrl: './stats.component.html',
   styleUrls: ['./stats.component.scss'],
 })
-export class StatsComponent implements OnInit, AfterViewInit, OnDestroy {
+export class StatsComponent implements OnInit, AfterViewInit {
   @ViewChild('canvas') private canvas: ElementRef;
   @Input() depositNumber: number;
   @Input() withdrawalNumber: number;
@@ -34,7 +32,6 @@ export class StatsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   donutChartInitializer() {
-    // this.removePreviousChart();
     this.donutChart = new Chart(this.canvas.nativeElement, {
       type: 'doughnut',
       data: {
@@ -51,15 +48,5 @@ export class StatsComponent implements OnInit, AfterViewInit, OnDestroy {
         ],
       },
     });
-  }
-
-  // removePreviousChart() {
-  //   if (this.donutChart) {
-  //     this.donutChart.destroy();
-  //   }
-  // }
-
-  ngOnDestroy() {
-    console.log("DESTROY");
   }
 }

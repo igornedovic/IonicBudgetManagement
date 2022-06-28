@@ -51,7 +51,7 @@ export class TransactionService {
           transactionData.type,
           transactionData.purpose,
           +transactionData.amount,
-          transactionData.date,
+          new Date(transactionData.date),
           transactionData.pictureUrl,
           fetchedUserId
         );
@@ -146,7 +146,7 @@ export class TransactionService {
           transactionData.type,
           transactionData.purpose,
           +transactionData.amount,
-          transactionData.date,
+          new Date(transactionData.date),
           transactionData.pictureUrl,
           oldTransaction.userId
         );
