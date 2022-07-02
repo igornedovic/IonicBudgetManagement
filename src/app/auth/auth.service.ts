@@ -107,6 +107,15 @@ export class AuthService {
             userForm.lastName
           );
 
+          this.storeAuthData(
+            userData.localId,
+            userData.email,
+            userData.idToken,
+            expirationTime.toISOString(),
+            userForm.firstName,
+            userForm.lastName
+          );
+
           return this.http.post<{ name: string }>(
             `https://budget-management-3ca84-default-rtdb.europe-west1.firebasedatabase.app/users.json?auth=${user.token}`,
             {
@@ -244,5 +253,6 @@ export class AuthService {
 
   logout() {
     this._user.next(null);
+    Storage.remove({ key: 'authData' });
   }
 }

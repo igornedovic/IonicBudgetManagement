@@ -82,8 +82,8 @@
             *ngIf="!isLoading"
             >Login</ion-button
           >
-          <ion-button fill="clear" expand="block" routerLink="/register"
-            >Register</ion-button
+          <ion-button fill="clear" expand="block" [routerLink]="['/','register']" 
+          >Register</ion-button
           >
         </ion-col>
       </ion-row>
