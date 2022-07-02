@@ -66,13 +66,13 @@
       <ion-row
         *ngIf="registerForm.get('email').invalid && registerForm.get('email').touched"
       >
-        <ion-col size-sm="6" offset-sm="3">
+        <ion-col sizeSm="6" offsetSm="3">
           <span>Email address is not in valid format.</span>
         </ion-col>
       </ion-row>
 
       <ion-row>
-        <ion-col size-sm="6" offset-sm="3">
+        <ion-col sizeSm="6" offsetSm="3">
           <ion-item>
             <ion-label position="floating">Password</ion-label>
             <ion-input
@@ -88,13 +88,13 @@
       <ion-row
         *ngIf="registerForm.get('password').invalid && registerForm.get('password').touched"
       >
-        <ion-col size-sm="6" offset-sm="3">
+        <ion-col sizeSm="6" offsetSm="3">
           <span>Password must be minimum 6 characters long.</span>
         </ion-col>
       </ion-row>
 
       <ion-row>
-        <ion-col size-sm="6" offset-sm="3">
+        <ion-col sizeSm="6" offsetSm="3">
           <ion-button
             type="submit"
             color="primary"

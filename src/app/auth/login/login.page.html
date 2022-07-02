@@ -47,11 +47,9 @@
         </ion-col>
       </ion-row>
 
-      <ion-row>
+      <ion-row *ngIf="email.invalid && email.touched">
         <ion-col sizeSm="6" offsetSm="3">
-          <ion-item lines="none" *ngIf="email.invalid && email.touched">
-            <ion-label>Email address is not in valid format.</ion-label>
-          </ion-item>
+          <span>Email address is not in valid format.</span>
         </ion-col>
       </ion-row>
 

@@ -14,12 +14,6 @@
           </ion-item>
         </ion-menu-toggle>
         <ion-menu-toggle>
-          <ion-item routerLink="/profile">
-            <ion-icon name="person-outline" slot="start"></ion-icon>
-            <ion-label>Profile</ion-label>
-          </ion-item>
-        </ion-menu-toggle>
-        <ion-menu-toggle>
           <ion-item routerLink="/new-transaction">
             <ion-icon name="add-circle-outline" slot="start"></ion-icon>
             <ion-label>Transaction</ion-label>
@@ -29,6 +23,12 @@
           <ion-item routerLink="/search">
             <ion-icon name="pie-chart-outline" slot="start"></ion-icon>
             <ion-label>Stats</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+        <ion-menu-toggle>
+          <ion-item routerLink="/profile">
+            <ion-icon name="person-outline" slot="start"></ion-icon>
+            <ion-label>Profile</ion-label>
           </ion-item>
         </ion-menu-toggle>
       </ion-list>
@@ -52,11 +52,6 @@
         <ion-label>Home</ion-label>
       </ion-tab-button>
 
-      <ion-tab-button tab="profile">
-        <ion-icon name="person"></ion-icon>
-        <ion-label>Profile</ion-label>
-      </ion-tab-button>
-
       <ion-tab-button tab="new-transaction">
         <ion-icon name="add-circle"></ion-icon>
         <ion-label>Transaction</ion-label>
@@ -65,6 +60,11 @@
       <ion-tab-button tab="search">
         <ion-icon name="pie-chart"></ion-icon>
         <ion-label>Stats</ion-label>
+      </ion-tab-button>
+
+      <ion-tab-button tab="profile">
+        <ion-icon name="person"></ion-icon>
+        <ion-label>Profile</ion-label>
       </ion-tab-button>
     </ion-tab-bar>
   </ion-tabs>
