@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { map, switchMap, take, tap } from 'rxjs/operators';
 import { User } from './user.model';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, from } from 'rxjs';
+import { Storage } from '@capacitor/storage';
 
 interface AuthResponseData {
   kind: string;
@@ -20,7 +21,6 @@ interface UserData {
   password: string;
   firstName?: string;
   lastName?: string;
-  balance?: number;
   userId?: string;
 }
 
@@ -104,8 +104,7 @@ export class AuthService {
             userData.idToken,
             expirationTime,
             userForm.firstName,
-            userForm.lastName,
-            0
+            userForm.lastName
           );
 
           return this.http.post<{ name: string }>(
@@ -126,6 +125,8 @@ export class AuthService {
 
   login(userForm: UserData) {
     let user: User;
+    let expirationTime: Date;
+    let token: string;
 
     return this.http
       .post<AuthResponseData>(
@@ -139,35 +140,106 @@ export class AuthService {
       .pipe(
         take(1),
         switchMap((userData) => {
-          const expirationTime = new Date(
+          expirationTime = new Date(
             new Date().getTime() + +userData.expiresIn * 1000
           );
+
+          token = userData.idToken;
 
           user = new User(
             userData.localId,
             userData.email,
             userData.idToken,
-            expirationTime,
+            expirationTime
           );
 
           return this.http.get<UserData>(
             `https://budget-management-3ca84-default-rtdb.europe-west1.firebasedatabase.app/users.json?orderBy="userId"&equalTo="${user.id}"&auth=${user.token}`
           );
-          
         }),
-        map(additionalUserData => {
-
+        map((additionalUserData) => {
           for (const key in additionalUserData) {
             if (additionalUserData.hasOwnProperty(key)) {
               user.firstN = additionalUserData[key].firstName;
               user.lastN = additionalUserData[key].lastName;
-              user.bal = additionalUserData[key].balance;
             }
           }
 
           this._user.next(user);
+
+          this.storeAuthData(
+            user.id,
+            user.email,
+            token,
+            expirationTime.toISOString(),
+            user.firstName,
+            user.lastName
+          );
         })
       );
+  }
+
+  autoLogin() {
+    return from(Storage.get({ key: 'authData' })).pipe(
+      map((storedData) => {
+        if (!storedData || !storedData.value) {
+          return null;
+        }
+
+        const parsedData = JSON.parse(storedData.value) as {
+          userId: string;
+          email: string;
+          token: string;
+          tokenExpirationDate: string;
+          firstName: string;
+          lastName: string;
+        };
+
+        const expirationDate = new Date(parsedData.tokenExpirationDate);
+
+        if (expirationDate <= new Date()) {
+          return null;
+        }
+
+        const user = new User(
+          parsedData.userId,
+          parsedData.email,
+          parsedData.token,
+          expirationDate,
+          parsedData.firstName,
+          parsedData.lastName
+        );
+
+        return user;
+      }),
+      tap((user) => {
+        if (user) {
+          this._user.next(user);
+        }
+      }),
+      map((user) => {
+        return !!user;
+      })
+    );
+  }
+
+  private storeAuthData(
+    userId: string,
+    email: string,
+    token: string,
+    tokenExpirationDate: string,
+    firstName: string,
+    lastName: string
+  ) {
+    const data = JSON.stringify({
+      userId: userId,
+      email: email,
+      token: token,
+      tokenExpirationDate: tokenExpirationDate,
+      firstName: firstName,
+      lastName: lastName,
+    });
+    Storage.set({ key: 'authData', value: data });
   }
 
   logout() {
