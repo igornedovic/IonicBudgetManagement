@@ -9,6 +9,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 import { TransactionType } from './transaction.model';
 import { TransactionService } from './transaction.service';
@@ -31,7 +32,7 @@ export class NewTransactionPage implements OnInit, OnDestroy {
   purpose: string;
   amount: number;
   date: string;
-  pictureUrl: string;
+  image: string | File;
 
   maxValidator: ValidatorFn; // stored on class level because of reference comparison
 
@@ -48,7 +49,7 @@ export class NewTransactionPage implements OnInit, OnDestroy {
       purpose: new FormControl('', Validators.required),
       amount: new FormControl('', [Validators.required, Validators.min(1)]),
       date: new FormControl('', Validators.required),
-      pictureUrl: new FormControl('', Validators.required),
+      image: new FormControl('', Validators.required),
     });
 
     this.transactionSub = this.transactionService.balance.subscribe(
@@ -67,13 +68,13 @@ export class NewTransactionPage implements OnInit, OnDestroy {
       this.purpose = history.state.purpose;
       this.amount = history.state.amount;
       this.date = history.state.date;
-      this.pictureUrl = history.state.pictureUrl;
+      this.image = history.state.image;
 
       this.transactionForm.get('type').setValue(this.type);
       this.transactionForm.get('purpose').setValue(this.purpose);
       this.transactionForm.get('amount').setValue(this.amount);
       this.transactionForm.get('date').setValue(this.date);
-      this.transactionForm.get('pictureUrl').setValue(this.pictureUrl);
+      this.transactionForm.get('image').setValue(this.image);
     }
   }
 
@@ -93,6 +94,13 @@ export class NewTransactionPage implements OnInit, OnDestroy {
   }
 
   onAddTransaction() {
+    if (
+      !this.transactionForm.valid ||
+      !this.transactionForm.get('image').value
+    ) {
+      return;
+    }
+
     this.loadingCtrl
       .create({
         message: 'Adding transaction...',
@@ -100,7 +108,16 @@ export class NewTransactionPage implements OnInit, OnDestroy {
       .then((loadingEl) => {
         loadingEl.present();
         this.transactionService
-          .addTransaction(this.transactionForm.value)
+          .uploadImage(this.transactionForm.get('image').value)
+          .pipe(
+            switchMap((uploadRes) => {
+              return this.transactionService.addTransaction(
+                this.transactionForm.value,
+                uploadRes.url
+              );
+            })
+          )
+
           .subscribe(() => {
             loadingEl.dismiss();
             this.transactionForm.reset();
@@ -124,6 +141,11 @@ export class NewTransactionPage implements OnInit, OnDestroy {
             this.router.navigate(['/home']);
           });
       });
+  }
+
+  onImageImported(imageData: string | File) {
+    console.log(imageData);
+    this.transactionForm.patchValue({ image: imageData });
   }
 
   ngOnDestroy() {

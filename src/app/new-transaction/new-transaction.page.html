@@ -17,7 +17,12 @@
         <ion-col sizeSm="6" offsetSm="3">
           <ion-item>
             <ion-label position="floating">Type:</ion-label>
-            <ion-select name="type" required formControlName="type" (ionChange)="onTypeChange($event)">
+            <ion-select
+              name="type"
+              required
+              formControlName="type"
+              (ionChange)="onTypeChange($event)"
+            >
               <ion-select-option
                 *ngFor="let type of transactionTypes"
                 [value]="type"
@@ -74,9 +79,17 @@
         *ngIf="transactionForm.get('amount').invalid && transactionForm.get('amount').touched"
       >
         <ion-col sizeSm="6" offsetSm="3">
-          <span *ngIf="transactionForm.get('amount').hasError('required')">Amount must contain at least 1 digit.</span>
-          <span *ngIf="transactionForm.get('amount').hasError('min')">Amount must be greater than 0.</span>
-          <span *ngIf="transactionForm.get('amount').hasError('max') && transactionForm.get('type').value == transactionTypes[1]">Your current balance ({{balance}} RSD) is less than withdrawal amount.</span>
+          <span *ngIf="transactionForm.get('amount').hasError('required')"
+            >Amount must contain at least 1 digit.</span
+          >
+          <span *ngIf="transactionForm.get('amount').hasError('min')"
+            >Amount must be greater than 0.</span
+          >
+          <span
+            *ngIf="transactionForm.get('amount').hasError('max') && transactionForm.get('type').value == transactionTypes[1]"
+            >Your current balance ({{balance}} RSD) is less than withdrawal
+            amount.</span
+          >
         </ion-col>
       </ion-row>
 
@@ -99,22 +112,18 @@
 
       <ion-row>
         <ion-col sizeSm="6" offsetSm="3">
-          <ion-item>
-            <ion-label position="floating">Picture URL:</ion-label>
-            <ion-input
-              type="text"
-              required
-              formControlName="pictureUrl"
-            ></ion-input>
-          </ion-item>
+          <app-image-input
+            [showPreview]="transactionForm.get('image').value"
+            (imagePick)="onImageImported($event)"
+          ></app-image-input>
         </ion-col>
       </ion-row>
 
       <ion-row
-        *ngIf="transactionForm.get('pictureUrl').invalid && transactionForm.get('pictureUrl').touched"
+        *ngIf="transactionForm.get('image').invalid && transactionForm.get('image').touched"
       >
         <ion-col sizeSm="6" offsetSm="3">
-          <span>Please enter a valid picture url.</span>
+          <span>Please import image.</span>
         </ion-col>
       </ion-row>
 
@@ -124,7 +133,7 @@
             type="submit"
             color="primary"
             expand="block"
-            [disabled]="transactionForm.invalid || !transactionForm.touched"
+            [disabled]="transactionForm.invalid || !transactionForm.touched || !transactionForm.get('image').value"
           >
             {{!title ? 'Add' : 'Edit'}}
           </ion-button>

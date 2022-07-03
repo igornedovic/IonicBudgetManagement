@@ -49,7 +49,7 @@ export class HomePage implements OnInit, OnDestroy {
         purpose: transaction.purpose,
         amount: transaction.amount,
         date: transaction.date.toISOString().slice(0, 10),
-        pictureUrl: transaction.pictureUrl,
+        image: transaction.imageUrl,
       },
     });
   }
