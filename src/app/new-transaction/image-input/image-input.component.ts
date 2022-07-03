@@ -1,20 +1,26 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-image-input',
   templateUrl: './image-input.component.html',
   styleUrls: ['./image-input.component.scss'],
 })
-export class ImageInputComponent implements OnInit {
+export class ImageInputComponent implements OnInit, AfterViewInit {
   @ViewChild('filePicker') filePickerRef: ElementRef<HTMLInputElement>;
   @Output() imagePick = new EventEmitter<string | File>();
+  @Input() fetchedImage: string;
   @Input() showPreview = false;
   selectedImage: string;
   usePicker = true;
 
   constructor() { }
 
+  ngAfterViewInit(): void {
+    console.log(!!this.fetchedImage);
+  }
+
   ngOnInit() {}
+
 
   onPickImage() {
     this.filePickerRef.nativeElement.click();

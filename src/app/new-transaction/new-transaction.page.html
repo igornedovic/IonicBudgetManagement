@@ -113,14 +113,15 @@
       <ion-row>
         <ion-col sizeSm="6" offsetSm="3">
           <app-image-input
-            [showPreview]="transactionForm.get('image').value"
+            [showPreview]="!!transactionForm.get('imageUrl').value"
+            [fetchedImage]="transactionForm.get('imageUrl').value"
             (imagePick)="onImageImported($event)"
           ></app-image-input>
         </ion-col>
       </ion-row>
 
       <ion-row
-        *ngIf="transactionForm.get('image').invalid && transactionForm.get('image').touched"
+        *ngIf="transactionForm.get('imageUrl').invalid && transactionForm.get('imageUrl').touched"
       >
         <ion-col sizeSm="6" offsetSm="3">
           <span>Please import image.</span>
@@ -133,7 +134,7 @@
             type="submit"
             color="primary"
             expand="block"
-            [disabled]="transactionForm.invalid || !transactionForm.touched || !transactionForm.get('image').value"
+            [disabled]="transactionForm.invalid || !transactionForm.touched || !transactionForm.get('imageUrl').value"
           >
             {{!title ? 'Add' : 'Edit'}}
           </ion-button>

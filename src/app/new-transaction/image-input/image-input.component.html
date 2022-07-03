@@ -4,12 +4,12 @@
     class="image"
     (click)="onPickImage()"
     [src]="selectedImage"
-    *ngIf="selectedImage && showPreview"
+    *ngIf="(selectedImage && showPreview) || (fetchedImage && showPreview)"
   ></ion-img>
   <ion-button
     color="primary"
     (click)="onPickImage()"
-    *ngIf="!selectedImage || !showPreview"
+    *ngIf="(!selectedImage || !showPreview) && (!fetchedImage || !showPreview)"
   >
     <ion-icon name="camera" slot="start"></ion-icon>
     <ion-label>Import Image</ion-label>

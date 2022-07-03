@@ -49,7 +49,7 @@ export class NewTransactionPage implements OnInit, OnDestroy {
       purpose: new FormControl('', Validators.required),
       amount: new FormControl('', [Validators.required, Validators.min(1)]),
       date: new FormControl('', Validators.required),
-      image: new FormControl('', Validators.required),
+      imageUrl: new FormControl('', Validators.required),
     });
 
     this.transactionSub = this.transactionService.balance.subscribe(
@@ -74,7 +74,7 @@ export class NewTransactionPage implements OnInit, OnDestroy {
       this.transactionForm.get('purpose').setValue(this.purpose);
       this.transactionForm.get('amount').setValue(this.amount);
       this.transactionForm.get('date').setValue(this.date);
-      this.transactionForm.get('image').setValue(this.image);
+      this.transactionForm.get('imageUrl').setValue(this.image);
     }
   }
 
@@ -96,7 +96,7 @@ export class NewTransactionPage implements OnInit, OnDestroy {
   onAddTransaction() {
     if (
       !this.transactionForm.valid ||
-      !this.transactionForm.get('image').value
+      !this.transactionForm.get('imageUrl').value
     ) {
       return;
     }
@@ -108,7 +108,7 @@ export class NewTransactionPage implements OnInit, OnDestroy {
       .then((loadingEl) => {
         loadingEl.present();
         this.transactionService
-          .uploadImage(this.transactionForm.get('image').value)
+          .uploadImage(this.transactionForm.get('imageUrl').value)
           .pipe(
             switchMap((uploadRes) => {
               return this.transactionService.addTransaction(
@@ -145,7 +145,7 @@ export class NewTransactionPage implements OnInit, OnDestroy {
 
   onImageImported(imageData: string | File) {
     console.log(imageData);
-    this.transactionForm.patchValue({ image: imageData });
+    this.transactionForm.patchValue({ imageUrl: imageData });
   }
 
   ngOnDestroy() {
