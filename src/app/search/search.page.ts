@@ -41,7 +41,7 @@ export class SearchPage implements OnInit, OnDestroy {
     this.modalCtrl
       .create({
         component: SearchModalComponent,
-        componentProps: { title: 'Add filters' },
+        componentProps: { title: 'Add filters', transactions: this.transactions },
       })
       .then((modal) => {
         modal.present();

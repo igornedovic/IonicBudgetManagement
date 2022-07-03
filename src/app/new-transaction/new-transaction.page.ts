@@ -144,7 +144,6 @@ export class NewTransactionPage implements OnInit, OnDestroy {
   }
 
   onImageImported(imageData: string | File) {
-    console.log(imageData);
     this.transactionForm.patchValue({ imageUrl: imageData });
   }
 

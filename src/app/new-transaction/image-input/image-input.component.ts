@@ -1,11 +1,11 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-image-input',
   templateUrl: './image-input.component.html',
   styleUrls: ['./image-input.component.scss'],
 })
-export class ImageInputComponent implements OnInit, AfterViewInit {
+export class ImageInputComponent implements OnInit {
   @ViewChild('filePicker') filePickerRef: ElementRef<HTMLInputElement>;
   @Output() imagePick = new EventEmitter<string | File>();
   @Input() fetchedImage: string;
@@ -14,10 +14,6 @@ export class ImageInputComponent implements OnInit, AfterViewInit {
   usePicker = true;
 
   constructor() { }
-
-  ngAfterViewInit(): void {
-    console.log(!!this.fetchedImage);
-  }
 
   ngOnInit() {}
 
