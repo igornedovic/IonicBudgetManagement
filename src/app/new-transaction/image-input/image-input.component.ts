@@ -1,13 +1,14 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-image-input',
   templateUrl: './image-input.component.html',
   styleUrls: ['./image-input.component.scss'],
 })
-export class ImageInputComponent implements OnInit {
+export class ImageInputComponent implements OnInit, OnChanges {
   @ViewChild('filePicker') filePickerRef: ElementRef<HTMLInputElement>;
   @Output() imagePick = new EventEmitter<string | File>();
+  @Input() isFetchedImage = false;
   @Input() fetchedImage: string;
   @Input() showPreview = false;
   selectedImage: string;
@@ -17,6 +18,11 @@ export class ImageInputComponent implements OnInit {
 
   ngOnInit() {}
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.isFetchedImage) {
+      this.selectedImage = null;
+    }
+  }
 
   onPickImage() {
     this.filePickerRef.nativeElement.click();
@@ -37,4 +43,5 @@ export class ImageInputComponent implements OnInit {
     };
     fr.readAsDataURL(pickedFile);
   }
+
 }

@@ -46,6 +46,10 @@ const routes: Routes = [
       import('./search/search.module').then((m) => m.SearchPageModule),
     canLoad: [AuthGuard],
   },
+  {
+    path: '**',
+    redirectTo: 'login',
+  }
 ];
 
 @NgModule({

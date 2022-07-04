@@ -115,6 +115,7 @@
           <app-image-input
             [showPreview]="!!transactionForm.get('imageUrl').value"
             [fetchedImage]="transactionForm.get('imageUrl').value"
+            [isFetchedImage]="isFetchedImage"
             (imagePick)="onImageImported($event)"
           ></app-image-input>
         </ion-col>

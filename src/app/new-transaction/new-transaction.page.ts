@@ -22,6 +22,7 @@ import { TransactionService } from './transaction.service';
 export class NewTransactionPage implements OnInit, OnDestroy {
   transactionForm: FormGroup;
   balance: number;
+  isFetchedImage = false;
 
   private transactionSub: Subscription;
 
@@ -75,6 +76,10 @@ export class NewTransactionPage implements OnInit, OnDestroy {
       this.transactionForm.get('amount').setValue(this.amount);
       this.transactionForm.get('date').setValue(this.date);
       this.transactionForm.get('imageUrl').setValue(this.image);
+
+      if (this.transactionForm.get('imageUrl').value) {
+        this.isFetchedImage = true;
+      }
     }
   }
 
@@ -117,7 +122,6 @@ export class NewTransactionPage implements OnInit, OnDestroy {
               );
             })
           )
-
           .subscribe(() => {
             loadingEl.dismiss();
             this.transactionForm.reset();
@@ -145,6 +149,7 @@ export class NewTransactionPage implements OnInit, OnDestroy {
 
   onImageImported(imageData: string | File) {
     this.transactionForm.patchValue({ imageUrl: imageData });
+    this.isFetchedImage = false;
   }
 
   ngOnDestroy() {

@@ -33,8 +33,8 @@
         <p>Could not find transactions based on a given criteria. Try again!</p>
       </ion-col>
       <ion-col
-        size-md="6"
-        offset-md="3"
+        sizeMd="6"
+        offsetMd="3"
         *ngIf="!isLoading && searchedTransactions && searchedTransactions.length > 0"
       >
         <ion-list *ngFor="let transaction of searchedTransactions">
@@ -54,8 +54,8 @@
     </ion-row>
     <ion-row>
       <ion-col
-        size-md="6"
-        offset-md="3"
+        sizeMd="6"
+        offsetMd="3"
         *ngIf="!isLoading && searchedTransactions && searchedTransactions.length > 0"
       >
         <app-stats [depositNumber]="depositNumber" [withdrawalNumber]="withdrawalNumber"></app-stats>
